@@ -1,6 +1,6 @@
 package test
 
-import parser.{MeshVertexParser, MeshVertex}
+import parser.{MeshVertexParser, MeshVertex, Polygon}
 
 class MeshVertexParserSpec extends UnitSpec {
   it("changes the vertex index if the vertex appears more than once with different UVs") {
@@ -9,12 +9,22 @@ class MeshVertexParserSpec extends UnitSpec {
     val result = MeshVertexParser.parse(rawData, 5)
 
     result should equal (Seq(
-      MeshVertex(vertex = 1, uv = 0, normal = 0, originalVertex = 1, material = 0),
-      MeshVertex(vertex = 2, uv = 1, normal = 1, originalVertex = 2, material = 0),
-      MeshVertex(vertex = 3, uv = 2, normal = 2, originalVertex = 3, material = 0),
-      MeshVertex(vertex = 0, uv = 3, normal = 3, originalVertex = 0, material = 0),
-      MeshVertex(vertex = 5, uv = 3, normal = 3, originalVertex = 3, material = 0),
-      MeshVertex(vertex = 6, uv = 4, normal = 4, originalVertex = 2, material = 0)
+      Polygon(
+        material = 0,
+        vertices = Seq(
+          MeshVertex(vertex = 1, uv = 0, normal = 0, originalVertex = 1),
+          MeshVertex(vertex = 2, uv = 1, normal = 1, originalVertex = 2),
+          MeshVertex(vertex = 3, uv = 2, normal = 2, originalVertex = 3)
+        )
+      ),
+      Polygon(
+        material = 0,
+        vertices = Seq(
+          MeshVertex(vertex = 0, uv = 3, normal = 3, originalVertex = 0),
+          MeshVertex(vertex = 5, uv = 3, normal = 3, originalVertex = 3),
+          MeshVertex(vertex = 6, uv = 4, normal = 4, originalVertex = 2)
+        )
+      )
     ))
   }
 
@@ -24,9 +34,14 @@ class MeshVertexParserSpec extends UnitSpec {
     val result = MeshVertexParser.parse(rawData, 2)
 
     result should equal (Seq(
-      MeshVertex(vertex = 1, uv = 0, normal = 0, originalVertex = 1, material = 0),
-      MeshVertex(vertex = 2, uv = 0, normal = 1, originalVertex = 1, material = 0),
-      MeshVertex(vertex = 3, uv = 0, normal = 2, originalVertex = 1, material = 0)
+      Polygon(
+        material = 0,
+        vertices = Seq(
+          MeshVertex(vertex = 1, uv = 0, normal = 0, originalVertex = 1),
+          MeshVertex(vertex = 2, uv = 0, normal = 1, originalVertex = 1),
+          MeshVertex(vertex = 3, uv = 0, normal = 2, originalVertex = 1)
+        )
+      )
     ))
   }
 
@@ -36,9 +51,14 @@ class MeshVertexParserSpec extends UnitSpec {
     val result = MeshVertexParser.parse(rawData, 2)
 
     result should equal (Seq(
-      MeshVertex(vertex = 1, uv = 0, normal = 0, originalVertex = 1, material = 0),
-      MeshVertex(vertex = 2, uv = 1, normal = 0, originalVertex = 1, material = 0),
-      MeshVertex(vertex = 2, uv = 1, normal = 0, originalVertex = 1, material = 0)
+      Polygon(
+        material = 0,
+        vertices = Seq(
+          MeshVertex(vertex = 1, uv = 0, normal = 0, originalVertex = 1),
+          MeshVertex(vertex = 2, uv = 1, normal = 0, originalVertex = 1),
+          MeshVertex(vertex = 2, uv = 1, normal = 0, originalVertex = 1)
+        )
+      )
     ))
   }
 }

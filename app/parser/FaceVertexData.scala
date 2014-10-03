@@ -1,43 +1,35 @@
 package parser
 
-private[parser] class FaceVertexData(data: Array[Int]) extends Iterator[MeshVertex] {
-  private var faceInfo = FaceBitmask(0)
-  private var order = Vector.empty[Int]
-  private var x = 0
+private[parser] class FaceVertexData(
+  data: Array[Int],
+  faceInfo: FaceBitmask,
+  vertexOrder: Seq[Int]
+) {
+  def polygon = Polygon(material, vertices)
 
-  def hasNext = x < order.length
+  private[this] def material =
+    if (faceInfo.hasMaterial)
+      data(faceInfo.numVertices)
+    else
+      0
 
-  def next = {
-    val result = readMeshVertex
-    x += 1
-    result
-  }
+  private[this] def vertices = vertexOrder.map(readMeshVertex)
 
-  private[this] def readMeshVertex = {
-    val vertexOffset = order(x)
+  private[this] def readMeshVertex(vertexOffset: Int) = {
     val materialOffset = if (faceInfo.hasMaterial) 1 else 0
     val offset = vertexOffset + materialOffset
 
     val vertex = data(vertexOffset)
     val uv = data(offset + faceInfo.numVertices)
     val normal = data(offset + faceInfo.numVertices * 2)
-    val material: Int = if (faceInfo.hasMaterial)
-      data(faceInfo.numVertices)
-    else
-      0
 
-    MeshVertex(vertex, uv, normal, vertex, material)
+    MeshVertex(vertex, uv, normal, vertex)
   }
 }
 
 private[parser] object FaceVertexData {
-  def applyFaceInfo(iterator: FaceVertexData, faceInfo: FaceBitmask) {
-    iterator.x = 0
-    iterator.faceInfo = faceInfo
-    iterator.order = vertexOrder(faceInfo)
-  }
-
-  def apply(data: Array[Int]): Iterator[MeshVertex] = new FaceVertexData(data)
+  def apply(data: Array[Int], faceInfo: FaceBitmask): Polygon =
+    new FaceVertexData(data, faceInfo, vertexOrder(faceInfo)).polygon
 
   private def vertexOrder(faceInfo: FaceBitmask) =
     if (faceInfo.isQuad)
@@ -46,6 +38,6 @@ private[parser] object FaceVertexData {
       triangleOrder
 
   private val triangleOrder = Vector(0, 1, 2)
-  private val quadOrder = Vector(0, 1, 3, 1, 2, 3)
+  private val quadOrder = Vector(0, 1, 2, 3)
 }
 
