@@ -1,6 +1,6 @@
 package controllers
 
-import models.{AnimationFileData, Geometry}
+import models._
 import parser.GeometryParser
 import encoder.BinaryEncodings._
 
@@ -30,7 +30,8 @@ object BinaryFiles extends Controller {
 
   private def parseAndConvert(data: AnimationFileData) = {
     val geometry = GeometryParser.parse(data)
-    encodeBinaryFile(geometry)
+    val processedAnimation = ProcessedAnimation(geometry, data.bones)
+    encodeBinaryFile(processedAnimation)
   }
 
   private def encodeBinaryFile[A: Codec](a: A): Array[Byte] = {

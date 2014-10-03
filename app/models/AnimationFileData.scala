@@ -8,7 +8,8 @@ case class AnimationFileData(
   private val uvs: Seq[IndexedSeq[Float]],
   normals: IndexedSeq[Float],
   skinWeights: IndexedSeq[Float],
-  skinIndices: IndexedSeq[Int]
+  skinIndices: IndexedSeq[Int],
+  bones: IndexedSeq[Joint]
 ) {
   val uvData = uvs.head
 }

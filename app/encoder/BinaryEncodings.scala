@@ -1,23 +1,34 @@
 package encoder
 
-import models.Geometry
+import models._
 import parser.FaceElements
 import scodec._, codecs._
 
 object BinaryEncodings {
   implicit val faceElements: Codec[FaceElements] = (
-    ("quads"    | seqOfN(int32L, uint16L)) ::
-    ("triangles"| seqOfN(int32L, uint16L))
+    ("quads"     | seqOfN(int32L, uint16L)) ::
+    ("triangles" | seqOfN(int32L, uint16L))
   ).as[FaceElements]
 
-  implicit val geometryCodec: Codec[Geometry] = (
-    ("vertices"        | iseqOfN(int32L, floatL)) ::
-    ("uvs"             | iseqOfN(int32L, floatL)) ::
-    ("normals"         | iseqOfN(int32L, floatL)) ::
-    ("faces"           | groupedFaceElements.encodeOnly) ::
-    ("skinWeights"     | iseqOfN(int32L, floatL)) ::
-    ("skinIndices"     | iseqOfN(int32L, uint8))
+  implicit val joint: Codec[Joint] = (
+    ("parent" | int16L) ::
+    ("name"   | utf8) ::
+    ("rotq"   | fixedSizeBytes(16, iseq(floatL))) ::
+    ("pos"    | fixedSizeBytes(12, iseq(floatL)))
+  ).as[Joint]
+
+  implicit val geometry: Codec[Geometry] = (
+    ("vertices"    | iseqOfN(int32L, floatL)) ::
+    ("uvs"         | iseqOfN(int32L, floatL)) ::
+    ("normals"     | iseqOfN(int32L, floatL)) ::
+    ("faces"       | groupedFaceElements.encodeOnly) ::
+    ("skinWeights" | iseqOfN(int32L, floatL)) ::
+    ("skinIndices" | iseqOfN(int32L, int16L))
   ).as[Geometry]
+
+  implicit val processedAnimationCodec: Codec[ProcessedAnimation] = (
+    geometry :: iseq(joint)
+  ).as[ProcessedAnimation]
 
   private def groupedFaceElements: Encoder[Map[Int, FaceElements]] =
     vectorOfN(int32L, int32L ~ faceElements).contramap(_.toVector)
@@ -30,6 +41,12 @@ object BinaryEncodings {
 
   private def iseqOfN[A](length: Codec[Int], value: Codec[A]): Codec[IndexedSeq[A]] =
     vectorOfN(length, value)
+      .map(_.toIndexedSeq)
+      .contramap((s: IndexedSeq[A]) => s.toVector)
+      .fuse
+
+  private def iseq[A](value: Codec[A]): Codec[IndexedSeq[A]] =
+    vector(value)
       .map(_.toIndexedSeq)
       .contramap((s: IndexedSeq[A]) => s.toVector)
       .fuse
