@@ -4,21 +4,20 @@ import models.{AnimationFileData, Geometry}
 
 object GeometryParser {
   def parse(data: AnimationFileData) = {
-    null
-    // val totalVertices = data.vertices.length / 3
-    // val meshVertices = MeshVertexParser.parse(data.faces, totalVertices)
-    // val faceData = FaceElements(meshVertices)
+    val totalVertices = data.vertices.length / 3
+    val polygons = MeshVertexParser.parse(data.faces, totalVertices)
+    val faceData = FaceElements(polygons)
 
-    // val orderedByVertex = meshVertices.distinct.sortBy(_.vertex)
-    // val vertexData = MeshVertices(orderedByVertex, data.vertices)
-    // val uvData = MeshUvs(orderedByVertex, data.uvData)
-    // val normalData = MeshNormals(orderedByVertex, data.normals)
+    val orderedByVertex = polygons.flatMap(_.vertices).distinct.sortBy(_.vertex)
+    val vertexData = MeshVertices(orderedByVertex, data.vertices)
+    val uvData = MeshUvs(orderedByVertex, data.uvData)
+    val normalData = MeshNormals(orderedByVertex, data.normals)
 
-    // Geometry(
-    //   vertices = vertexData,
-    //   uvs = uvData,
-    //   normals = normalData,
-    //   faces = faceData
-    // )
+    Geometry(
+      vertices = vertexData,
+      uvs = uvData,
+      normals = normalData,
+      faces = faceData
+    )
   }
 }
