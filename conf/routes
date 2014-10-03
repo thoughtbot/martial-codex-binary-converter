@@ -1,2 +1,2 @@
-GET     /binary_files/:fileName     controllers.BinaryFile.debug(fileName: String)
-POST    /binary_files               controllers.BinaryFile.create
+GET     /binary_files/:fileName     controllers.BinaryFiles.debug(fileName: String)
+POST    /binary_files               controllers.BinaryFiles.create
