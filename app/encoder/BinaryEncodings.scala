@@ -11,10 +11,12 @@ object BinaryEncodings {
   ).as[FaceElements]
 
   implicit val geometryCodec: Codec[Geometry] = (
-    ("vertices" | iseqOfN(int32L, floatL)) ::
-    ("uvs"      | iseqOfN(int32L, floatL)) ::
-    ("normals"  | iseqOfN(int32L, floatL)) ::
-    ("faces"    | groupedFaceElements.encodeOnly)
+    ("vertices"        | iseqOfN(int32L, floatL)) ::
+    ("uvs"             | iseqOfN(int32L, floatL)) ::
+    ("normals"         | iseqOfN(int32L, floatL)) ::
+    ("faces"           | groupedFaceElements.encodeOnly) ::
+    ("skinWeights"     | iseqOfN(int32L, floatL)) ::
+    ("skinIndices"     | iseqOfN(int32L, uint8))
   ).as[Geometry]
 
   private def groupedFaceElements: Encoder[Map[Int, FaceElements]] =

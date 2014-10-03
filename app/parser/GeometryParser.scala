@@ -12,12 +12,16 @@ object GeometryParser {
     val vertexData = MeshVertices(orderedByVertex, data.vertices)
     val uvData = MeshUvs(orderedByVertex, data.uvData)
     val normalData = MeshNormals(orderedByVertex, data.normals)
+    val skinWeights = SkinWeights(orderedByVertex, data.skinWeights)
+    val skinIndices = SkinIndices(orderedByVertex, data.skinIndices)
 
     Geometry(
       vertices = vertexData,
       uvs = uvData,
       normals = normalData,
-      faces = faceData
+      faces = faceData,
+      skinWeights = skinWeights,
+      skinIndices = skinIndices
     )
   }
 }

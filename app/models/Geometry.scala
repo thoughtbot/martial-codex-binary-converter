@@ -6,5 +6,7 @@ case class Geometry(
   vertices: IndexedSeq[Float],
   uvs: IndexedSeq[Float],
   normals: IndexedSeq[Float],
-  faces: Map[Int, FaceElements]
+  faces: Map[Int, FaceElements],
+  skinWeights: IndexedSeq[Float],
+  skinIndices: IndexedSeq[Int]
 )
