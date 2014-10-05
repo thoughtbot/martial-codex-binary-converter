@@ -31,7 +31,12 @@ object BinaryFiles extends Controller {
 
   private def parseAndConvert(data: AnimationFileData) = {
     val geometry = GeometryParser.parse(data)
-    val processedAnimation = ProcessedAnimation(geometry, data.bones, data.animation)
+    val processedAnimation = ProcessedAnimation(
+      geometry,
+      data.bones,
+      data.animation,
+      data.materialData
+    )
     encodeBinaryFile(processedAnimation)
   }
 

@@ -10,10 +10,12 @@ case class AnimationFileData(
   skinWeights: IndexedSeq[Float],
   skinIndices: IndexedSeq[Int],
   bones: IndexedSeq[Joint],
-  private val animations: Seq[Animation]
+  private val animations: Seq[Animation],
+  private val materials: IndexedSeq[OMaterial]
 ) {
   val uvData = uvs.head
   val animation = animations.head
+  val materialData = materials.map(Material.apply)
 }
 
 object AnimationFileData {

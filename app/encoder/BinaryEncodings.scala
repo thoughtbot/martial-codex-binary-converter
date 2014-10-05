@@ -44,8 +44,15 @@ object BinaryEncodings {
     ("hierarchy" | seqOfN(int32L, jointTimeline))
   ).as[Animation]
 
+  implicit val material: Codec[Material] = (
+    ("shininess"   | floatL) ::
+    ("diffuseMap"  | utf8) ::
+    ("specularMap" | utf8) ::
+    ("normalMap"   | utf8)
+  ).as[Material]
+
   implicit val processedAnimationCodec: Codec[ProcessedAnimation] = (
-    geometry :: iseq(joint) :: animation
+    geometry :: iseq(joint) :: animation :: iseq(material)
   ).as[ProcessedAnimation]
 
   private def groupedFaceElements: Encoder[Map[Int, FaceElements]] =
