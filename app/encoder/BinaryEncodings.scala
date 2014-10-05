@@ -19,7 +19,7 @@ object BinaryEncodings {
 
   implicit val geometry: Codec[Geometry] = (
     ("vertices"    | iseqOfN(int32L, floatL)) ::
-    ("uvs"         | iseqOfN(int32L, floatL)) ::
+    ("uvs"         | iseqOfN(int32L, floatAsShortL)) ::
     ("normals"     | iseqOfN(int32L, floatL)) ::
     ("faces"       | groupedFaceElements.encodeOnly) ::
     ("skinWeights" | iseqOfN(int32L, floatL)) ::
@@ -54,6 +54,11 @@ object BinaryEncodings {
   implicit val processedAnimationCodec: Codec[ProcessedAnimation] = (
     geometry :: iseq(joint) :: animation :: iseq(material)
   ).as[ProcessedAnimation]
+
+  private def floatAsShortL: Codec[Float] =
+    shortL(16)
+      .contramap((x: Float) => (x * 2048).toShort)
+      .encodeOnly
 
   private def groupedFaceElements: Encoder[Map[Int, FaceElements]] =
     vectorOfN(int32L, int32L ~ faceElements).contramap(_.toVector)
