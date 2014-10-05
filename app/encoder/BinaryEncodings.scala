@@ -26,8 +26,26 @@ object BinaryEncodings {
     ("skinIndices" | iseqOfN(int32L, int16L))
   ).as[Geometry]
 
+  implicit val keyframe: Codec[Keyframe] = (
+    ("time" | floatL) ::
+    ("rot"  | fixedSizeBytes(16, iseq(floatL))) ::
+    ("pos"  | fixedSizeBytes(12, iseq(floatL))) ::
+    ("scl"  | fixedSizeBytes(12, iseq(floatL)))
+  ).as[Keyframe]
+
+  implicit val jointTimeline: Codec[JointTimeline] = (
+    seqOfN(int32L, keyframe).hlist
+  ).as[JointTimeline]
+
+  implicit val animation: Codec[Animation] = (
+    ("name"      | utf8) ::
+    ("length"    | floatL) ::
+    ("fps"       | int32L) ::
+    ("hierarchy" | seqOfN(int32L, jointTimeline))
+  ).as[Animation]
+
   implicit val processedAnimationCodec: Codec[ProcessedAnimation] = (
-    geometry :: iseq(joint)
+    geometry :: iseq(joint) :: animation
   ).as[ProcessedAnimation]
 
   private def groupedFaceElements: Encoder[Map[Int, FaceElements]] =

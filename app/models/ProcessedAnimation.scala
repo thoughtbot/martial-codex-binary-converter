@@ -2,5 +2,6 @@ package models
 
 case class ProcessedAnimation(
   geometry: Geometry,
-  joints: IndexedSeq[Joint]
+  joints: IndexedSeq[Joint],
+  animation: Animation
 )

@@ -9,9 +9,11 @@ case class AnimationFileData(
   normals: IndexedSeq[Float],
   skinWeights: IndexedSeq[Float],
   skinIndices: IndexedSeq[Int],
-  bones: IndexedSeq[Joint]
+  bones: IndexedSeq[Joint],
+  private val animations: Seq[Animation]
 ) {
   val uvData = uvs.head
+  val animation = animations.head
 }
 
 object AnimationFileData {

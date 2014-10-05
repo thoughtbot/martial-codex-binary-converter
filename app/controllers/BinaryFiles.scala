@@ -13,9 +13,10 @@ object BinaryFiles extends Controller {
   def debug(fileName: String) = Action {
     val filePath = System.getenv("HOME") + "/Desktop/3d models/IOPS_A2_t1_01_new.js"
     val file = Source.fromFile(filePath).mkString
-    convertAnimationData(file)
-      .map(Ok(_: Array[Byte]))
-      .getOrElse(BadRequest("Invalid file data"))
+    convertAnimationData(file) match {
+      case JsSuccess(bytes, _) => Ok(bytes)
+      case JsError(errors) => BadRequest(errors.toString)
+    }
   }
 
   def create = Action {
@@ -30,7 +31,7 @@ object BinaryFiles extends Controller {
 
   private def parseAndConvert(data: AnimationFileData) = {
     val geometry = GeometryParser.parse(data)
-    val processedAnimation = ProcessedAnimation(geometry, data.bones)
+    val processedAnimation = ProcessedAnimation(geometry, data.bones, data.animation)
     encodeBinaryFile(processedAnimation)
   }
 
