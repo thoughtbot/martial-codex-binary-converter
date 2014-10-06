@@ -1,7 +1,7 @@
 package parser
 
 private[parser] class FaceVertexData(
-  data: Array[Int],
+  data: IndexedSeq[Int],
   faceInfo: FaceBitmask,
   vertexOrder: Seq[Int]
 ) {
@@ -11,7 +11,7 @@ private[parser] class FaceVertexData(
     if (faceInfo.hasMaterial)
       data(faceInfo.numVertices)
     else
-      0
+      -1
 
   private[this] def vertices = vertexOrder.map(readMeshVertex)
 
@@ -28,7 +28,7 @@ private[parser] class FaceVertexData(
 }
 
 private[parser] object FaceVertexData {
-  def apply(data: Array[Int], faceInfo: FaceBitmask): Polygon =
+  def apply(data: IndexedSeq[Int], faceInfo: FaceBitmask): Polygon =
     new FaceVertexData(data, faceInfo, vertexOrder(faceInfo)).polygon
 
   private def vertexOrder(faceInfo: FaceBitmask) =

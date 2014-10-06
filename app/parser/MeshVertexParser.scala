@@ -4,7 +4,7 @@ import scala.collection.mutable
 
 object MeshVertexParser {
   def parse(faceData: Seq[Int], totalVertices: Int): IndexedSeq[Polygon] = {
-    val result = MeshVertexData(faceData).toVector
+    val result = MeshVertexData(faceData).toVector.filterNot(_.material == -1)
 
     val seenVertices = result
       .flatMap(_.vertices)
