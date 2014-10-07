@@ -10,7 +10,7 @@ class MeshVertexDataSpec extends UnitSpec {
 
     result should equal (Seq(
       Triangle(
-        material = 0,
+        material = -1,
         vertices = Seq(
           MeshVertex(vertex = 1, uv = 0, normal = 0, originalVertex = 1),
           MeshVertex(vertex = 2, uv = 1, normal = 1, originalVertex = 2),
@@ -18,7 +18,7 @@ class MeshVertexDataSpec extends UnitSpec {
         )
       ),
       Triangle(
-        material = 0,
+        material = -1,
         vertices = Seq(
           MeshVertex(vertex = 0, uv = 3, normal = 3, originalVertex = 0),
           MeshVertex(vertex = 3, uv = 2, normal = 2, originalVertex = 3),
@@ -35,7 +35,7 @@ class MeshVertexDataSpec extends UnitSpec {
 
     result should equal (Seq(
       Quad(
-        material = 0,
+        material = -1,
         vertices = Seq(
           MeshVertex(vertex = 1, uv = 0, normal = 0, originalVertex = 1),
           MeshVertex(vertex = 2, uv = 1, normal = 1, originalVertex = 2),
@@ -44,7 +44,7 @@ class MeshVertexDataSpec extends UnitSpec {
         )
       ),
       Triangle(
-        material = 0,
+        material = -1,
         vertices = Seq(
           MeshVertex(vertex = 1, uv = 0, normal = 0, originalVertex = 1),
           MeshVertex(vertex = 2, uv = 1, normal = 1, originalVertex = 2),

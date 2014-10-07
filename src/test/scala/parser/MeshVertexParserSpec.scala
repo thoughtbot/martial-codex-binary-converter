@@ -3,8 +3,16 @@ package test
 import parser.{MeshVertexParser, MeshVertex, Polygon}
 
 class MeshVertexParserSpec extends UnitSpec {
-  it("changes the vertex index if the vertex appears more than once with different UVs") {
+  it("excludes polygons without a material") {
     val rawData = Vector(40, 1, 2, 3, 0, 1, 2, 0, 1, 2, 40, 0, 3, 2, 3, 3, 4, 3, 3, 4)
+
+    val result = MeshVertexParser.parse(rawData, 5)
+
+    result should equal (Seq.empty[Polygon])
+  }
+
+  it("changes the vertex index if the vertex appears more than once with different UVs") {
+    val rawData = Vector(42, 1, 2, 3, 0, 0, 1, 2, 0, 1, 2, 42, 0, 3, 2, 0, 3, 3, 4, 3, 3, 4)
 
     val result = MeshVertexParser.parse(rawData, 5)
 
@@ -29,7 +37,7 @@ class MeshVertexParserSpec extends UnitSpec {
   }
 
   it("changes the vertex index if the vertex appears more than once with different normals") {
-    val rawData = Vector(40, 1, 1, 1, 0, 0, 0, 0, 1, 2)
+    val rawData = Vector(42, 1, 1, 1, 0, 0, 0, 0, 0, 1, 2)
 
     val result = MeshVertexParser.parse(rawData, 2)
 
@@ -46,7 +54,7 @@ class MeshVertexParserSpec extends UnitSpec {
   }
 
   it("reuses the index of the repeated vertex when the changed UV appears more than once") {
-    val rawData = Vector(40, 1, 1, 1, 0, 1, 1, 0, 0, 0)
+    val rawData = Vector(42, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0)
 
     val result = MeshVertexParser.parse(rawData, 2)
 
