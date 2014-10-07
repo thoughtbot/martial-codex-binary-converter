@@ -12,7 +12,7 @@ object BinaryEncodings {
 
   implicit val joint: Codec[Joint] = (
     ("parent" | int16L) ::
-    ("name"   | utf8) ::
+    ("name"   | variableSizeBytes(uint16L, utf8)) ::
     ("rotq"   | fixedSizeBytes(16, iseq(floatL))) ::
     ("pos"    | fixedSizeBytes(12, iseq(floatL)))
   ).as[Joint]
@@ -38,7 +38,7 @@ object BinaryEncodings {
   ).as[JointTimeline]
 
   implicit val animation: Codec[Animation] = (
-    ("name"      | utf8) ::
+    ("name"      | variableSizeBytes(uint16L, utf8)) ::
     ("length"    | floatL) ::
     ("fps"       | int32L) ::
     ("hierarchy" | seqOfN(int32L, jointTimeline))
@@ -46,13 +46,13 @@ object BinaryEncodings {
 
   implicit val material: Codec[Material] = (
     ("shininess"   | floatL) ::
-    ("diffuseMap"  | utf8) ::
-    ("specularMap" | utf8) ::
-    ("normalMap"   | utf8)
+    ("diffuseMap"  | variableSizeBytes(uint16L, utf8)) ::
+    ("specularMap" | variableSizeBytes(uint16L, utf8)) ::
+    ("normalMap"   | variableSizeBytes(uint16L, utf8))
   ).as[Material]
 
   implicit val processedAnimationCodec: Codec[ProcessedAnimation] = (
-    geometry :: iseq(joint) :: animation :: iseq(material)
+    geometry :: iseqOfN(int32L, joint) :: animation :: iseqOfN(int32L, material)
   ).as[ProcessedAnimation]
 
   private def floatAsShortL: Codec[Float] =
