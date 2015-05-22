@@ -21,6 +21,8 @@ object BinaryEncodings {
     ("vertices"    | iseqOfN(int32L, floatL)) ::
     ("uvs"         | iseqOfN(int32L, floatAsShortL)) ::
     ("normals"     | iseqOfN(int32L, floatL)) ::
+    ("tangents"    | iseqOfN(int32L, floatL)) ::
+    ("binormals"   | iseqOfN(int32L, floatL)) ::
     ("faces"       | groupedFaceElements.encodeOnly) ::
     ("skinWeights" | iseqOfN(int32L, floatL)) ::
     ("skinIndices" | iseqOfN(int32L, int16L))
@@ -45,20 +47,24 @@ object BinaryEncodings {
   ).as[Animation]
 
   implicit val material: Codec[Material] = (
-    ("shininess"   | floatL) ::
-    ("diffuseMap"  | variableSizeBytes(uint16L, utf8)) ::
-    ("specularMap" | variableSizeBytes(uint16L, utf8)) ::
-    ("normalMap"   | variableSizeBytes(uint16L, utf8))
+    ("shininess"          | floatL) ::
+    ("diffuseMap"         | variableSizeBytes(uint16L, utf8)) ::
+    ("specularMap"        | variableSizeBytes(uint16L, utf8)) ::
+    ("glossMap"           | variableSizeBytes(uint16L, utf8)) ::
+    ("normalMap"          | variableSizeBytes(uint16L, utf8)) ::
+    ("incandescenceMask"  | variableSizeBytes(uint16L, utf8)) ::
+    ("incandescenceColor" | fixedSizeBytes(12, iseq(floatL)))
   ).as[Material]
 
   implicit val processedAnimationCodec: Codec[ProcessedAnimation] = (
-    geometry :: iseqOfN(int32L, joint) :: animation :: iseqOfN(int32L, material)
+    iseqOfN(int32L, geometry) :: int32L :: iseqOfN(int32L, joint) :: animation :: iseqOfN(int32L, material)
   ).as[ProcessedAnimation]
 
   private def floatAsShortL: Codec[Float] =
     shortL(16)
-      .contramap((x: Float) => (x * 2048).toShort)
-      .encodeOnly
+      .map((x: Short) => x / 4096f)
+      .contramap((x: Float) => (x * 4096).toShort)
+      .fuse
 
   private def groupedFaceElements: Encoder[Map[Int, FaceElements]] =
     vectorOfN(int32L, int32L ~ faceElements).contramap(_.toVector)
