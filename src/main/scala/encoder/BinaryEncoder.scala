@@ -22,9 +22,10 @@ case class BinaryEncoder(input: String) {
   }
 
   private def parseAndConvert(data: AnimationFileData) = {
-    val geometry = GeometryParser.parse(data)
+    val geometry = data.meshes.map(GeometryParser.parse(_, data.influencesPerVertex))
     val processedAnimation = ProcessedAnimation(
       geometry,
+      data.influencesPerVertex,
       data.bones,
       data.animation,
       data.materialData
@@ -39,5 +40,5 @@ case class BinaryEncoder(input: String) {
 }
 
 object BinaryEncoder {
-  val Version = 3
+  val Version = 4
 }

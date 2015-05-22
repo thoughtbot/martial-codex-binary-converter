@@ -6,7 +6,11 @@ case class OMaterial(
   specularCoef: Option[Float],
   mapDiffuse: Option[String],
   mapSpecular: Option[String],
-  mapNormal: Option[String]
+  mapGloss: Option[String],
+  mapNormal: Option[String],
+  mapIncandescence: Option[String],
+  mapIncandescenceColorGain: Option[IndexedSeq[Float]],
+  colorIncandescence: IndexedSeq[Float]
 )
 
 object OMaterial {
@@ -17,7 +21,10 @@ case class Material(
   shininess: Float,
   diffuseMap: String,
   specularMap: String,
-  normalMap: String
+  glossMap: String,
+  normalMap: String,
+  incandescenceMask: String,
+  incandescenceColor: IndexedSeq[Float]
 )
 
 object Material {
@@ -25,6 +32,9 @@ object Material {
     omaterial.specularCoef.getOrElse(0f),
     omaterial.mapDiffuse.getOrElse(""),
     omaterial.mapSpecular.getOrElse(""),
-    omaterial.mapNormal.getOrElse("")
+    omaterial.mapGloss.getOrElse(""),
+    omaterial.mapNormal.getOrElse(""),
+    omaterial.mapIncandescence.getOrElse(""),
+    omaterial.mapIncandescenceColorGain.getOrElse(omaterial.colorIncandescence)
   )
 }

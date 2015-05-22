@@ -1,9 +1,9 @@
 package parser
 
-import models.{AnimationFileData, Geometry}
+import models.{Mesh, Geometry}
 
 object GeometryParser {
-  def parse(data: AnimationFileData) = {
+  def parse(data: Mesh, influencesPerVertex: Int) = {
     val totalVertices = data.vertices.length / 3
     val polygons = MeshVertexParser.parse(data.faces, totalVertices)
 
@@ -12,15 +12,19 @@ object GeometryParser {
 
     val faceData = FaceElements(squishedPolygons)
     val vertexData = MeshVertices(orderedByVertex, data.vertices)
-    val uvData = MeshUvs(orderedByVertex, data.uvData)
+    val uvData = MeshUvs(orderedByVertex, data.uvs)
     val normalData = MeshNormals(orderedByVertex, data.normals)
-    val skinWeights = SkinWeights(orderedByVertex, data.skinWeights)
-    val skinIndices = SkinIndices(orderedByVertex, data.skinIndices)
+    val tangentData = MeshNormals(orderedByVertex, data.tangents)
+    val binormalData = MeshNormals(orderedByVertex, data.binormals)
+    val skinWeights = SkinWeights(orderedByVertex, data.skinWeights, influencesPerVertex)
+    val skinIndices = SkinIndices(orderedByVertex, data.skinIndices, influencesPerVertex)
 
     Geometry(
       vertices = vertexData,
       uvs = uvData,
       normals = normalData,
+      tangents = tangentData,
+      binormals = binormalData,
       faces = faceData,
       skinWeights = skinWeights,
       skinIndices = skinIndices

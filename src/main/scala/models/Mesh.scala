@@ -1,14 +1,18 @@
 package models
 
-import parser.FaceElements
+import play.api.libs.json._
 
-case class Geometry(
+case class Mesh(
+  faces: IndexedSeq[Int],
   vertices: IndexedSeq[Float],
   uvs: IndexedSeq[Float],
   normals: IndexedSeq[Float],
   tangents: IndexedSeq[Float],
   binormals: IndexedSeq[Float],
-  faces: Map[Int, FaceElements],
   skinWeights: IndexedSeq[Float],
   skinIndices: IndexedSeq[Int]
 )
+
+object Mesh {
+  implicit val meshFormat = Json.format[Mesh]
+}

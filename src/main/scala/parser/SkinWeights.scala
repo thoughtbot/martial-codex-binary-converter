@@ -1,9 +1,9 @@
 package parser
 
 object SkinWeights {
-  def apply(data: IndexedSeq[MeshVertex], skinData: IndexedSeq[Float]): IndexedSeq[Float] =
+  def apply(data: IndexedSeq[MeshVertex], skinData: IndexedSeq[Float], influencesPerVertex: Int): IndexedSeq[Float] =
     data.flatMap { meshVertex =>
-      val index = meshVertex.originalVertex * 4
-      skinData.slice(index, index + 4)
+      val index = meshVertex.originalVertex * influencesPerVertex
+      skinData.slice(index, index + influencesPerVertex)
     }
 }
