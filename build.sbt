@@ -18,6 +18,6 @@ mainClass in assembly := Some("Main")
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-json" % "2.3.4",
-  "org.typelevel" %% "scodec-core" % "1.4.0-SNAPSHOT",
+  "org.typelevel" %% "scodec-core" % "1.4.0",
   "org.scalatest" %% "scalatest" % "2.2.1" % "test"
 )
